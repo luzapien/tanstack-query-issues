@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { GithubIssue, State } from '../interfaces'
 import { useQueryClient } from '@tanstack/react-query'
 import { getComments, getIssue } from '../actions'
+import { timeSince } from '../../helpers'
 
 interface IssuesProps {
     issue: GithubIssue
@@ -12,19 +13,19 @@ export const IssueItem = ({ issue }: IssuesProps) => {
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
-    const prefretchData = () => {
-        queryClient.prefetchQuery({
-            queryKey: ['issues', issue.number],
-            queryFn: () => getIssue(issue.number),
-            staleTime: 1000 * 60,
-        })
+    // const prefretchData = () => {
+    //     queryClient.prefetchQuery({
+    //         queryKey: ['issues', issue.number],
+    //         queryFn: () => getIssue(issue.number),
+    //         staleTime: 1000 * 60,
+    //     })
 
-        queryClient.prefetchQuery({
-            queryKey: ['issues', issue.number, 'comments'],
-            queryFn: () => getComments(issue.number),
-            staleTime: 1000 * 60,
-        })
-    }
+    //     queryClient.prefetchQuery({
+    //         queryKey: ['issues', issue.number, 'comments'],
+    //         queryFn: () => getComments(issue.number),
+    //         staleTime: 1000 * 60,
+    //     })
+    // }
 
     const presetData = () => {
         queryClient.setQueryData(['issues', issue.number], issue, {
@@ -49,8 +50,21 @@ export const IssueItem = ({ issue }: IssuesProps) => {
                     {issue.title}
                 </a>
                 <span className='text-gray-500'>
-                    #${issue.number} opened by $ <span className='font-bold'>{issue.user.login}</span>
+                    #${issue.number} opened {timeSince(issue.created_at)} by $ <span className='font-bold'>{issue.user.login}</span>
                 </span>
+                <div className='flex flex-wrap'>
+                    {issue.labels.map((label) => (
+                        <span
+                            key={label.id}
+                            className='px-2 mx-2 py-1 text-xs text-white rounded-md'
+                            style={{
+                                border: `1px solid #${label.color}`,
+                            }}
+                        >
+                            {label.name}
+                        </span>
+                    ))}
+                </div>
             </div>
 
             <img src={issue.user.avatar_url} alt='User Avatar' className='w-8 h-8 rounded-full' />
