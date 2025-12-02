@@ -2,10 +2,10 @@ import { githubApi } from '../../api/github.api'
 import { sleep } from '../../helpers'
 import { GithubIssue } from '../interfaces'
 
-export const getIssue = async (issueNumber: number): Promise<GithubIssue> => {
+export const getComments = async (issueNumber: number): Promise<GithubIssue[]> => {
   await sleep(1500);
 
-  const { data } = await githubApi.get<GithubIssue>(`/issues/${issueNumber}`);
+  const { data } = await githubApi.get<GithubIssue[]>(`/issues/${issueNumber}/comments`);
 
 
   return data;

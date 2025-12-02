@@ -1,10 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { getIssues } from '../actions'
+import { State } from '../interfaces'
 
-export const useIssues = () => {
+interface useIssuesProps {
+    state: State
+}
+
+export const useIssues = ({ state }: useIssuesProps) => {
+    
+    console.log({state})
     const issuesQuery = useQuery({
-        queryKey: ['issues'],
-        queryFn: getIssues,
+        queryKey: ['issues',state],
+        queryFn: () => getIssues(state),
         staleTime: 1000 * 60,
     })
     return { issuesQuery }
