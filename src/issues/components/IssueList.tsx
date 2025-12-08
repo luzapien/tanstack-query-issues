@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { GithubIssue, State } from '../interfaces'
 import { IssueItem } from './IssueItem'
 
